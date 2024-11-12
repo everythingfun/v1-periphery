@@ -71,13 +71,16 @@ abstract contract SetBase is ISet, ISetCallback, SetBaseErrors, SetBaseCallback,
         _kind = kind;
     }
 
-    function _create(uint64 id, bytes32[] memory elems) internal returns (ObjectMeta memory) {
+    function _create(uint64 id, bytes32[] memory elems, address to) internal returns (ObjectMeta memory) {
         uint32 kindRev = IOOPS(_oops).kindRevAt(_kind, 0);
         uint32 setRev = IOOPS(_oops).setRevAt(_set, 0);
         ObjectMeta memory meta =
             ObjectMeta({flags: 0, rev: 1, kindRev: kindRev, setRev: setRev, kind: _kind, set: _set});
         _metas[id] = meta;
         _elems[id] = elems;
+        _mint(to, id, 1, "");
+        emit Created(id, meta, elems, to);
+        emit TransferSingle(to, address(0), to, id, 1);
         return meta;
     }
 

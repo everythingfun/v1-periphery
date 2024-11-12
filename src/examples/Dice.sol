@@ -39,10 +39,7 @@ contract Dice is SetBase {
 
         bytes32[] memory elems = new bytes32[](1);
         elems[0] = bytes32(faceValue);
-
-        ObjectMeta memory meta = _create(id, elems);
-        emit Created(id, meta, elems, msg.sender);
-        emit TransferSingle(msg.sender, address(0), msg.sender, id, 1);
+        _create(id, elems, msg.sender);
         return id;
     }
 
