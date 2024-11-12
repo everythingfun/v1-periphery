@@ -78,9 +78,8 @@ abstract contract SetBase is ISet, ISetCallback, SetBaseErrors, SetBaseCallback,
             ObjectMeta({flags: 0, rev: 1, kindRev: kindRev, setRev: setRev, kind: _kind, set: _set});
         _metas[id] = meta;
         _elems[id] = elems;
-        _mint(to, id, 1, "");
         emit Created(id, meta, elems, to);
-        emit TransferSingle(to, address(0), to, id, 1);
+        _mint(to, id, 1, "");
         return meta;
     }
 
