@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ISet} from "../interfaces/ISet.sol";
-import {ISetCallback} from "../interfaces/ISetCallback.sol";
-import {ObjectMeta} from "../interfaces/core/types/ObjectMeta.sol";
+import {ISet} from "../interfaces/user/ISet.sol";
+import {ISetCallback} from "../interfaces/user/ISetCallback.sol";
 import {IOOPS} from "../interfaces/core/IOOPS.sol";
+import {ObjectMeta} from "../interfaces/core/Types.sol";
 import {IERC7572} from "../interfaces/external/IERC7572.sol";
 import {ERC1155} from "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
 import {IERC1155MetadataURI} from "@openzeppelin/contracts/token/ERC1155/extensions/IERC1155MetadataURI.sol";
@@ -45,15 +45,33 @@ abstract contract SetBaseCallback is ISetCallback {
         return ISetCallback.onRegisterSet.selector;
     }
 
-    function onTransferSet(address, address) external pure returns (bytes4) {
+    function onTransferSet(address, address) external pure override returns (bytes4) {
         return ISetCallback.onTransferSet.selector;
     }
 
-    function onTouchObject(uint64) external pure returns (bytes4) {
-        return ISetCallback.onTouchObject.selector;
+    function onTouchObject(uint64 /*id*/ ) external pure override returns (bytes4, uint32) {
+        return (ISetCallback.onTouchObject.selector, 0);
     }
 
-    function onTransferObject(uint64, address, address) external pure returns (bytes4) {
+    function onRelateObjects(uint64, /*id*/ uint128, /*dep*/ uint64, /*rel*/ uint64, /*data*/ bool /*bump*/ )
+        external
+        pure
+        override
+        returns (bytes4)
+    {
+        return ISetCallback.onRelateObjects.selector;
+    }
+
+    function onUnrelateObjects(uint64, /*id*/ uint128, /*dep*/ uint64, /*rel*/ uint64, /*data*/ bool /*bump*/ )
+        external
+        pure
+        override
+        returns (bytes4)
+    {
+        return ISetCallback.onUnrelateObjects.selector;
+    }
+
+    function onTransferObject(uint64, address, address) external pure override returns (bytes4) {
         return ISetCallback.onTransferObject.selector;
     }
 }
@@ -134,6 +152,8 @@ abstract contract SetBase is ISet, ISetCallback, SetBaseErrors, SetBaseCallback,
         safeTransferFrom(msg.sender, to, id, 1, "");
         emit Transferred(id, msg.sender, to);
     }
+
+    function ownerOf(uint64 id) external view returns (address) {}
 
     function metaAt(uint64 id, uint32 rev) external view returns (ObjectMeta memory) {
         ObjectMeta memory meta = _metas[id];

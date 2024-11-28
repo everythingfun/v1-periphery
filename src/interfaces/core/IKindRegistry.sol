@@ -1,8 +1,7 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-import {ElementType} from "./types/Elements.sol";
-import {ObjectMeta} from "./types/ObjectMeta.sol";
+import {ElementType, ObjectMeta} from "./Types.sol";
 
 /**
  * @title IKindRegistry
@@ -162,4 +161,11 @@ interface IKindRegistry {
      * @return Revision number (0 if invalid)
      */
     function revAt(uint64 id, uint32 rev) external view returns (uint32);
+
+    /**
+     * @notice Checks whether a list of kind IDs exist
+     * @param ids An array of kind IDs to validate
+     * @return A boolean indicating whether all provided IDs exist
+     */
+    function check(uint64[] memory ids) external view returns (bool);
 }

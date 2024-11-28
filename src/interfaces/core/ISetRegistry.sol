@@ -1,8 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {ElementType} from "./types/Elements.sol";
-import {ObjectMeta} from "./types/ObjectMeta.sol";
+import {ElementType, ObjectMeta} from "./Types.sol";
 
 /**
  * @title ISetRegistry

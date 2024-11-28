@@ -1,13 +1,20 @@
-// SPDX-License-Identifier: MIT
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
-
-import {ObjectMeta} from "./core/types/ObjectMeta.sol";
 
 /**
  * @title ISet
  * @notice Complete interface combining methods and events for Set contracts
  */
 interface ISet {
+    struct ObjectMeta {
+        uint32 flags;
+        uint32 rev;
+        uint32 kindRev;
+        uint32 setRev;
+        uint64 kind;
+        uint64 set;
+    }
+
     /**
      * @notice Emitted when a new object is created within a set
      * @param id The ID of the object
@@ -82,7 +89,7 @@ interface ISet {
      * @param id The ID of the object
      * @return Owner's address
      */
-    // function ownerOf(uint64 id) external view returns (address);
+    function ownerOf(uint64 id) external view returns (address);
 
     /**
      * @notice Gets object metadata at specific revision

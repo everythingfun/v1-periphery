@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {RelationRule, Adjacency} from "./types/Relations.sol";
+import {RelationRule, Adjacency, DepAdjacency} from "./Types.sol";
 
 /// @title IOOPS
 /// @notice OOPS (Object Operating and Positioning System) is the contract responsible for handling the registration and management of relations, transforms, and spaces, while also overseeing object interactions and positioning within the protocol.
@@ -44,7 +44,19 @@ interface IRelationRegistry {
     /// @param to The address to transfer ownership to
     function transferRelation(uint64 rel, address to) external;
 
-    function checkRelations(uint64[] memory rels) external;
+    /**
+     * @notice Checks whether a list of kind IDs exist
+     * @param rels An array of Relation IDs to validate
+     * @return A boolean indicating whether all provided IDs exist
+     */
+    function checkRelations(uint64[] memory rels) external view returns (bool);
+
+    function checkRelationDest(uint64 rel, uint64 destKind, uint32 destKindRev)
+        external
+        view
+        returns (bool, RelationRule memory);
+
+    function checkRelationDep(uint64 rel, uint64 depKind) external view returns (DepAdjacency memory);
 
     // function getRelation(uint64 rel) external returns (RelationRecorrd memory);
 }

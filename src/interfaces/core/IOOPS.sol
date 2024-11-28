@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {RelationRule, Adjacency} from "./types/Relations.sol";
+import {RelationRule, Adjacency} from "./Types.sol";
 import {IRelationRegistry} from "./IRelationRegistry.sol";
 import {ISpaceRegistry} from "./ISpaceRegistry.sol";
 

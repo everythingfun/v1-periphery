@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import {RelationRule, Adjacency} from "./types/Relations.sol";
+import {RelationRule, Adjacency} from "./Types.sol";
 
 /// @title IOOPS
 /// @notice OOPS (Object Operating and Positioning System) is the contract responsible for handling the registration and management of relations, transforms, and spaces, while also overseeing object interactions and positioning within the protocol.
