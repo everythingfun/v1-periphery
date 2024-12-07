@@ -11,6 +11,7 @@ import {IERC1155MetadataURI} from "@openzeppelin/contracts/token/ERC1155/extensi
 
 abstract contract SetBaseErrors {
     error NotOwner();
+    error OnlyFromOOPS();
     error InvalidUpgrade();
     error ObjectNotExist();
     error LastestRevisionOnly();
@@ -35,7 +36,7 @@ abstract contract SetBaseCallback is ISetCallback {
         uint64 universe,
         uint64 set,
         address /*owner*/
-    ) external returns (bytes4) {
+    ) external virtual returns (bytes4) {
         _oops = oops;
         _elemr = elemr;
         _kindr = kindr;
@@ -45,18 +46,17 @@ abstract contract SetBaseCallback is ISetCallback {
         return ISetCallback.onRegisterSet.selector;
     }
 
-    function onTransferSet(address, address) external pure override returns (bytes4) {
+    function onTransferSet(address, address) external virtual returns (bytes4) {
         return ISetCallback.onTransferSet.selector;
     }
 
-    function onTouchObject(uint64 /*id*/ ) external pure override returns (bytes4, uint32) {
+    function onTouchObject(uint64 /*id*/ ) external virtual returns (bytes4, uint32) {
         return (ISetCallback.onTouchObject.selector, 0);
     }
 
     function onRelateObjects(uint64, /*id*/ uint128, /*dep*/ uint64, /*rel*/ uint64, /*data*/ bool /*bump*/ )
         external
-        pure
-        override
+        virtual
         returns (bytes4)
     {
         return ISetCallback.onRelateObjects.selector;
@@ -64,14 +64,13 @@ abstract contract SetBaseCallback is ISetCallback {
 
     function onUnrelateObjects(uint64, /*id*/ uint128, /*dep*/ uint64, /*rel*/ uint64, /*data*/ bool /*bump*/ )
         external
-        pure
-        override
+        virtual
         returns (bytes4)
     {
         return ISetCallback.onUnrelateObjects.selector;
     }
 
-    function onTransferObject(uint64, address, address) external pure override returns (bytes4) {
+    function onTransferObject(uint64, address, address) external virtual returns (bytes4) {
         return ISetCallback.onTransferObject.selector;
     }
 }
@@ -179,6 +178,35 @@ abstract contract SetBase is ISet, ISetCallback, SetBaseErrors, SetBaseCallback,
         } else {
             revert RevisionNotExist();
         }
+    }
+
+    // ISetCallback
+    function onRelateObjects(uint64 id, uint128, /*dep*/ uint64, /*rel*/ uint64, /*data*/ bool bump)
+        external
+        override(SetBaseCallback, ISetCallback)
+        returns (bytes4)
+    {
+        ObjectMeta storage meta = _metas[id];
+        if (meta.rev == 0) revert ObjectNotExist();
+        if (msg.sender != _oops) revert OnlyFromOOPS();
+        if (bump) {
+            meta.rev++;
+        }
+        return ISetCallback.onRelateObjects.selector;
+    }
+
+    function onUnrelateObjects(uint64 id, uint128, /*dep*/ uint64, /*rel*/ uint64, /*data*/ bool bump)
+        external
+        override(SetBaseCallback, ISetCallback)
+        returns (bytes4)
+    {
+        ObjectMeta storage meta = _metas[id];
+        if (meta.rev == 0) revert ObjectNotExist();
+        if (msg.sender != _oops) revert OnlyFromOOPS();
+        if (bump) {
+            meta.rev++;
+        }
+        return ISetCallback.onUnrelateObjects.selector;
     }
 
     // IERC165
