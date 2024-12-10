@@ -38,7 +38,10 @@ interface IObjectMinter {
     function mintPolicyAt(address set, uint32 index) external returns (MintPolicy memory);
     function priceOf(address set, uint64 id) external returns (address currency, uint96 price);
     function priceOf(address set, uint64 id, uint32 offset) external returns (address currency, uint96 price);
-    function mint(address recipient, address set, uint64 id, bytes calldata args) external payable;
+    function mint(address recipient, address set, uint64 id, bytes calldata mintArgs) external payable;
+    function mint(address recipient, address set, uint64 id, bytes calldata mintArgs, bytes calldata objectArgs)
+        external
+        payable;
 
     function _mintPolicyAdd(MintPolicy memory policy) external returns (uint32 index);
     function _mintPolicyUpdate(uint32 index, MintPolicy memory policy) external;
